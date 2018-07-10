@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "InternetUptimeMonitor.Service": {
+      "commandName": "Project"
+    }
+  }
+}
