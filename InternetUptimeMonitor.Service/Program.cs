@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using InternetUptimeMonitor.Service.DbLogProvider;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -53,10 +55,14 @@ namespace InternetUptimeMonitor.Service
 					configLogging.AddConfiguration(hostContext.Configuration.GetSection("Logging"));
 					configLogging.AddConsole();
 					configLogging.AddDebug();
+					var dbContext = configLogging.Services.BuildServiceProvider()
+												.GetRequiredService<LoggingContext>();
+					configLogging.AddContext(LogLevel.Information, dbContext);
+					dbContext.Database.EnsureCreated();
 				})
 				.UseConsoleLifetime()
 				.Build();
-			
+
 			await host.RunAsync(cancellationToken);
 		}
 	}
